@@ -1,5 +1,7 @@
-function JobDescriptionInput({ jobDescription, onDescriptionChange }) {
-  const handleChange = (e) => {
+import { JobDescriptionInputProps } from "../types/types";
+
+function JobDescriptionInput({ jobDescription, onDescriptionChange }:JobDescriptionInputProps) {
+  const handleChange = (e:React.ChangeEvent<HTMLTextAreaElement>) => {
     onDescriptionChange(e.target.value);
   };
 

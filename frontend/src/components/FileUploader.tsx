@@ -1,7 +1,15 @@
-function FileUploader({ onFileUpload, selectedFile }) {
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    onFileUpload(file);
+import { FileUploaderProps } from "../types/types";
+
+function FileUploader({ onFileUpload, selectedFile }:FileUploaderProps) {
+  const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      onFileUpload(e.target.files[0]);
+    }
+     e.target.value = '';
+  };
+
+  const handleClearFile = () => {
+    onFileUpload(null);
   };
 
   return (
@@ -22,11 +30,20 @@ function FileUploader({ onFileUpload, selectedFile }) {
                      focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {selectedFile && (
+          <button
+            type="button"
+            onClick={handleClearFile}
+            className="ml-2 text-sm text-red-600 hover:text-red-800"
+          >
+            Clear
+          </button>
+        )}
+        </div>
+        {selectedFile && (
           <span className="ml-2 text-sm text-green-600">
             {selectedFile.name}
           </span>
         )}
-      </div>
     </div>
   );
 }

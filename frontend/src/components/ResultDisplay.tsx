@@ -1,5 +1,7 @@
-function ResultDisplay({ score, details }) {
-  const getScoreColor = (score) => {
+import { ResultDisplayProps } from "../types/types";
+
+function ResultDisplay({ score, details }:ResultDisplayProps) {
+  const getScoreColor = (score: number) => {
     if (score > 70) return 'text-green-600';
     if (score > 50) return 'text-yellow-600';
     return 'text-red-600';

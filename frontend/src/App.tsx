@@ -1,31 +1,35 @@
-// src/App.jsx
 import { useState } from 'react';
 import FileUploader from './components/FileUploader';
 import JobDescriptionInput from './components/JobDescriptionInput';
 import ResultDisplay from './components/ResultDisplay';
 import { analyzeResume } from './services/apiService';
 import { validateFileAndDescription } from './utils/validations';
+import { ApiResponse } from './types/types';
 
 function App() {
-  const [resume, setResume] = useState(null);
-  const [jobDescription, setJobDescription] = useState('');
-  const [analysisResult, setAnalysisResult] = useState(null);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [resume, setResume] = useState<File | null>(null);
+  const [jobDescription, setJobDescription] = useState<string>('');
+  const [analysisResult, setAnalysisResult] = useState<ApiResponse | null>(null);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleFileUpload = (file) => {
+  const handleFileUpload = (file: File | null) => {
+    if (!file) {
+      alert("Please upload valid file!");
+      return;
+    }
     setResume(file);
     setError('');
   };
 
-  const handleJobDescriptionChange = (description) => {
+  const handleJobDescriptionChange = (description: string) => {
     setJobDescription(description);
     setError('');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Validate inputs
     const validationError = validateFileAndDescription(resume, jobDescription);
     if (validationError) {
@@ -35,10 +39,16 @@ function App() {
 
     setLoading(true);
     setError('');
-    
+
     try {
       const formData = new FormData();
-      formData.append('resume', resume);
+
+      if (resume) {
+        formData.append("resume", resume);
+      } else {
+        throw new Error("Resume file is missing.");
+      }
+      
       formData.append('jobDescription', jobDescription);
 
       const result = await analyzeResume(formData);
@@ -59,12 +69,12 @@ function App() {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <FileUploader 
-            onFileUpload={handleFileUpload} 
+          <FileUploader
+            onFileUpload={handleFileUpload}
             selectedFile={resume}
           />
 
-          <JobDescriptionInput 
+          <JobDescriptionInput
             jobDescription={jobDescription}
             onDescriptionChange={handleJobDescriptionChange}
           />
@@ -75,8 +85,8 @@ function App() {
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 
                        transition-colors duration-300 disabled:opacity-50"
@@ -86,8 +96,8 @@ function App() {
         </form>
 
         {analysisResult && (
-          <ResultDisplay 
-            score={analysisResult.score} 
+          <ResultDisplay
+            score={analysisResult.score}
             details={analysisResult.details}
           />
         )}

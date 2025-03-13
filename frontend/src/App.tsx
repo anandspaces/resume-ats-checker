@@ -30,7 +30,6 @@ function App() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validate inputs
     const validationError = validateFileAndDescription(resume, jobDescription);
     if (validationError) {
       setError(validationError);
@@ -49,12 +48,12 @@ function App() {
         throw new Error("Resume file is missing.");
       }
       
-      formData.append('jobDescription', jobDescription);
+      formData.append('job_description', jobDescription);
 
       const result = await analyzeResume(formData);
       setAnalysisResult(result);
-    } catch (err) {
-      setError('Failed to analyze resume. Please try again.');
+    } catch (err:any) {
+      setError(err.message || 'Failed to analyze resume');
       console.error('Resume analysis error:', err);
     } finally {
       setLoading(false);
@@ -80,7 +79,7 @@ function App() {
           />
 
           {error && (
-            <div className="text-red-500 text-sm text-center">
+            <div className="text-red-500 text-sm text-center mb-4 p-2 bg-red-50 rounded">
               {error}
             </div>
           )}

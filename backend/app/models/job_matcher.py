@@ -1,7 +1,10 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-def match_resume_with_job(resume_text, job_description):
+def match_resume_with_job(resume_text: str, job_description: str):
+    """
+    Matches the resume text with the job description using TF-IDF + Cosine Similarity.
+    """
     vectorizer = TfidfVectorizer(stop_words="english")
     vectors = vectorizer.fit_transform([resume_text, job_description])
     
